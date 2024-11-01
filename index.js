@@ -3,34 +3,27 @@ const express = require('express');
 const multer = require('multer');
 const { google } = require('googleapis');
 const cors = require('cors');
-const path = require('path');
 const fs = require('fs');
 
 const app = express();
 app.use(cors());
 const upload = multer({ dest: 'uploads/' });
 
-// Carrega as credenciais e tokens
-const credentials = require('./credentials.json');
-const tokens = require('./tokens.json');
-
-// Verificação de configurações
-console.log('Verificando configurações:', {
-    temCredenciais: !!credentials,
-    temTokens: !!tokens,
-    sheetId: process.env.SHEET_ID?.substring(0, 5) + '...',
-    folderId: process.env.FOLDER_ID?.substring(0, 5) + '...'
-});
-
-// Configura o cliente OAuth2
+// Configura o cliente OAuth2 usando variáveis de ambiente
 const oauth2Client = new google.auth.OAuth2(
-    credentials.web.client_id,
-    credentials.web.client_secret,
-    credentials.web.redirect_uris[0]
+    process.env.CLIENT_ID,           // CLIENT_ID do seu projeto
+    process.env.CLIENT_SECRET,       // CLIENT_SECRET do seu projeto
+    process.env.REDIRECT_URI         // URI de redirecionamento configurada no Google
 );
 
-// Configura os tokens
-oauth2Client.setCredentials(tokens);
+// Configura os tokens usando variáveis de ambiente
+oauth2Client.setCredentials({
+    access_token: process.env.ACCESS_TOKEN,
+    refresh_token: process.env.REFRESH_TOKEN,
+    scope: process.env.SCOPE,
+    token_type: process.env.TOKEN_TYPE,
+    expiry_date: process.env.EXPIRY_DATE
+});
 
 app.post('/enviar', upload.array('photos', 5), async (req, res) => {
     try {
