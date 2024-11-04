@@ -1,0 +1,13 @@
+{
+  "name": "ultimo-abraco-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "axios": "^0.21.1",
+    "googleapis": "^39.2.0"  // Para integração com Google Sheets
+  }
+}
